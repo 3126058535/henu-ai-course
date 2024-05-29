@@ -2,3 +2,5 @@
 *.tmp
 *.tgz
 *.tar
+*.bin
+*.gz
