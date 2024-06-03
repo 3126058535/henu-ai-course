@@ -23,12 +23,12 @@ y_train = []
 
 x_test = []
 y_test = []
-for i in range(60, len(training_set)):
-    x_train.append(training_set[i - 60:i, 0])
+for i in range(1, len(training_set)):
+    x_train.append(training_set[i - 1:i, 0])
     y_train.append(training_set[i, 0])
     
-for i in range(60, len(test_set)):
-    x_test.append(test_set[i - 60:i, 0])
+for i in range(1, len(test_set)):
+    x_test.append(test_set[i - 1:i, 0])
     y_test.append(test_set[i, 0])
     
 # 对训练集进行打乱
@@ -37,14 +37,14 @@ np.random.shuffle(x_train)
 np.random.seed(7)
 np.random.shuffle(y_train)
 tf.random.set_seed(7)
-x_train, y_train = np.array(x_train), np.array(y_train) # x_train形状为：(2066, 60, 1)
+x_train, y_train = np.array(x_train), np.array(y_train) 
 x_test,  y_test  = np.array(x_test),  np.array(y_test)
 
 """
 输入要求：[送入样本数， 循环核时间展开步数， 每个时间步输入特征个数]
 """
-x_train = np.reshape(x_train, (x_train.shape[0], 60, 1))
-x_test  = np.reshape(x_test,  (x_test.shape[0], 60, 1))
+x_train = np.reshape(x_train, (x_train.shape[0], 1, 1))
+x_test  = np.reshape(x_test,  (x_test.shape[0], 1, 1))
 
 model = tf.keras.Sequential([
     SimpleRNN(100, return_sequences=True), #布尔值。是返回输出序列中的最后一个输出，还是全部序列。
@@ -83,18 +83,18 @@ model.summary()
 
 plt.plot(history.history['loss']    , label='Training Loss')
 plt.plot(history.history['val_loss'], label='Validation Loss')
-plt.title('Training and Validation Loss by K同学啊')
+plt.title('Training and Validation Loss')
 plt.legend()
 plt.show()
-
-predicted_stock_price = model.predict(x_test)                       # 测试集输入模型进行预测
-predicted_stock_price = sc.inverse_transform(predicted_stock_price) # 对预测数据还原---从（0，1）反归一化到原始范围
-real_stock_price = sc.inverse_transform(test_set[60:])              # 对真实数据还原---从（0，1）反归一化到原始范围
+predicted_stock_price = model.predict(x_test)
+#predicted_stock_price = predicted_stock_price.reshape(predicted_stock_price.shape[0], -1) # Reshape to 2D
+predicted_stock_price = sc.inverse_transform(predicted_stock_price)
+real_stock_price = sc.inverse_transform(test_set[1:])              # 对真实数据还原---从（0，1）反归一化到原始范围
 
 # 画出真实数据和预测数据的对比曲线
 plt.plot(real_stock_price, color='red', label='Stock Price')
 plt.plot(predicted_stock_price, color='blue', label='Predicted Stock Price')
-plt.title('Stock Price Prediction by K同学啊')
+plt.title('Stock Price Prediction')
 plt.xlabel('Time')
 plt.ylabel('Stock Price')
 plt.legend()

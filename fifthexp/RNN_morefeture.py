@@ -28,7 +28,7 @@ def create_dataset(dataset, time_step=60):
     x, y = [], []
     for i in range(time_step, len(dataset)):
         x.append(dataset[i-time_step:i, :])
-        y.append(dataset[i, 1])  # close price as target
+        y.append(dataset[i, 1])  
     return np.array(x), np.array(y)
 
 x_train, y_train = create_dataset(training_set)
